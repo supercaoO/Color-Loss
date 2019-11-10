@@ -35,7 +35,7 @@ class ColorLoss(nn.Module):
         super(ColorLoss, self).__init__()
 
     def forward(self, x1, x2):
-        return torch.sum(torch.pow((x1 - x2), 2)).div(x1.size()[0])
+        return torch.sum(torch.pow((x1 - x2), 2)).div(2 * x1.size()[0])
 
 
 if __name__ == '__main__':
