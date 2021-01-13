@@ -14,19 +14,19 @@ def gauss_kernel(kernlen=21, nsig=3, channels=1):
     out_filter = np.array(kernel, dtype=np.float32)
     out_filter = out_filter.reshape((kernlen, kernlen, 1, 1))
     out_filter = np.repeat(out_filter, channels, axis=2)
-    out_filter = np.repeat(out_filter, channels, axis=3)
     return out_filter
 
 
 class Blur(nn.Module):
     def __init__(self, nc):
         super(Blur, self).__init__()
-        kernel = gauss_kernel(21, 3, nc)
-        kernel = torch.from_numpy(kernel).permute(3, 2, 0, 1)
+        self.nc = nc
+        kernel = gauss_kernel(kernlen=21, nsig=3, channels=self.nc)
+        kernel = torch.from_numpy(kernel).permute(2, 3, 0, 1)
         self.weight = nn.Parameter(data=kernel, requires_grad=False)
 
     def forward(self, x):
-        x = F.conv2d(x, self.weight, stride=1, padding=10)
+        x = F.conv2d(x, self.weight, stride=1, padding=10, groups=self.nc)
         return x
 
 
