@@ -26,6 +26,9 @@ class Blur(nn.Module):
         self.weight = nn.Parameter(data=kernel, requires_grad=False)
 
     def forward(self, x):
+        if x.size(1) != self.nc:
+            raise RuntimeError(
+                "The channel of input [%d] does not match the preset channel [%d]" % (x.size(1), self.nc))
         x = F.conv2d(x, self.weight, stride=1, padding=10, groups=self.nc)
         return x
 
